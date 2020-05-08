@@ -56,6 +56,13 @@ let upListener = () => {
 document.body.addEventListener('mouseup', upListener)
 
 
+document.body.addEventListener('touchend', function(){
+    		audio.play(); 
+        	texture = new THREE.DataTexture( makeNoise(), width, height, THREE.RGBFormat );
+    		material.displacementMap = texture;
+})
+
+
 
 
 
