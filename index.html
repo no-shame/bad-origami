@@ -4,10 +4,45 @@
   <title>bad origami</title>
 
   <style>
-    body { margin: 0; }
-    canvas { width: 100%; height: 100% }
+    body { 
+
+      background: white;
+
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+
+
+        background-repeat: no-repeat;
+  background-size: cover;
+/*      background-image: url("video/grid.jpg");*/
+    }
+    canvas {
+
+      position:absolute;
+      width: 100px; 
+      height: 100px; 
+
+      /*background-image: linear-gradient(#9e9f99, #e9e9e7, #ffffff);*/
+    }
+
+
+    #bgVideo{
+      display:none;
+/*            width: 100vw;
+      height: 100vh;*/
+    }
+
+
   </style>
-  </style>
+  
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
 </head>
@@ -15,9 +50,26 @@
 
 
 
+  <!-- The video -->
+<video muted loop id="bgVideo">
+  <source src="video/ocean.mp4" type="video/mp4">
+</video>
+
+
+
   <audio id="myAudio">
     <source src="paper.wav" type="audio/wav">
   </audio>
+
+  <audio id="ambientBed" loop>
+    <source src="drone-bed.wav" type="audio/wav">
+  </audio>
+
+  <audio id="audioAccent" loop>
+    <source src="accent.wav" type="audio/wav">
+  </audio>
+
+
 
   <video id="video" autoplay style="display:none"></video>
 

@@ -5,12 +5,12 @@ var size = width * height;
 var imgData = new Uint8Array( 3 * size );
 var r, g, b;
 
-var z = 0;
-var scale = 4.5;
+var z = 0.0;
+var scale = 3;
 
-makeNoise = () => {
+makeNoise = (value) => {
 
-	z = Math.random() * 1000;
+    z += value || 0;
 
     for (let i = 0; i < width; i++) {
         for (let j = 0; j < height; j++) {
