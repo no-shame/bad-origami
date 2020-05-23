@@ -6,7 +6,7 @@ var imgData = new Uint8Array( 3 * size );
 var r, g, b;
 
 var z = 0.0;
-var scale = 3;
+var scale = 4.5;
 
 makeNoise = (value) => {
 

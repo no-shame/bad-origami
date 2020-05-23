@@ -6,7 +6,7 @@
   <style>
     body { 
 
-      background: white;
+      background: lightblue;
 
       margin: 0;
       padding: 0;
@@ -17,30 +17,62 @@
       align-items: center;
       overflow: hidden;
 
-
-        background-repeat: no-repeat;
-  background-size: cover;
+      background-size:     contain;                      
+/*      background-repeat:   no-repeat;
+      background-position: center center;  */
 /*      background-image: url("video/grid.jpg");*/
     }
+
     canvas {
-
       position:absolute;
-      width: 100px; 
+/*      width: 100px; 
       height: 100px; 
-
+*/
       /*background-image: linear-gradient(#9e9f99, #e9e9e7, #ffffff);*/
     }
 
 
     #bgVideo{
-      display:none;
+      /*display:none;*/
 /*            width: 100vw;
       height: 100vh;*/
     }
 
+    .placard{
+      position:absolute;
+      z-index: 100;
+      /*background: white;*/
+      right:0;
+      width:0%;
+      height:60%;
+
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 500;
+      font-size: 4.5vh;
+
+
+      word-break: break-all;
+      text-overflow: break-all; 
+      margin-right:0%;
+
+      color:white;
+      transition: all 5s;
+      transition-timing-function: ease-out;
+    }
+
+    .placard.opened{
+      width: 20%; 
+      margin-right:3%; 
+      
+    }
+
+
+
+
 
   </style>
-  
+
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200;300;400;500&display=swap" rel="stylesheet"> 
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -50,32 +82,151 @@
 
 
 
-  <!-- The video -->
-<video muted loop id="bgVideo">
-  <source src="video/ocean.mp4" type="video/mp4">
-</video>
-
-
+  <!-- background video -->
+  <video muted loop autoplay id="bgVideo">
+    <source src="video/ocean.mp4" type="video/mp4">
+  </video>
 
   <audio id="myAudio">
-    <source src="paper.wav" type="audio/wav">
+    <source src="./sound/paper.wav" type="audio/wav">
   </audio>
 
   <audio id="ambientBed" loop>
-    <source src="drone-bed.wav" type="audio/wav">
+    <source src="./sound/drone-bed.wav" type="audio/wav">
   </audio>
 
   <audio id="audioAccent" loop>
-    <source src="accent.wav" type="audio/wav">
+    <source src="./sound/accent.wav" type="audio/wav">
   </audio>
 
-
-
+  <!-- webcam video -->
   <video id="video" autoplay style="display:none"></video>
 
-  <script src="./tooloud.min.js"></script>
-  <script src="noise.js"></script>
-  <script type="module" src="app.js"></script>
+
+
+
+  <script src="./js/tooloud.min.js"></script>
+  <script src="./js/noise.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/utils.js"></script>
+
+  <div class ="placard">
+    <div class = "description">
+     L<br>
+     ONDON
+      INFORMaTION &
+        SPRING EXHIBITION,
+        2/2-2/16, 2020
+        SAT-SUN,
+        10AM-6PM
+        FREE ADMISSION,
+        LOCATION OF INSTALLATION:
+    </div>
+  </div>
+
+
+
+
+
+    <script>
+
+      function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var strTime = hours + ':' + minutes + ampm;
+        return strTime;
+    }
+
+    function  formatDate(date){
+        //Need to finish this
+        return date    
+    }
+
+
+
+      function initMap() {
+        var options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
+
+        function success(pos) {
+          var crd = pos.coords;
+
+          console.log('Your current position is:');
+          console.log(`Latitude : ${crd.latitude}`);
+          console.log(`Longitude: ${crd.longitude}`);
+          console.log(`More or less ${crd.accuracy} meters.`);
+
+
+            var locRequest = new XMLHttpRequest();
+            locRequest.open('GET', `https://maps.googleapis.com/maps/api/geocode/json?latlng=${crd.latitude},${crd.longitude}&key=AIzaSyAZl79D2Z2t0LKwJuXebToC3qOJ9P6H8ME`);
+            locRequest.onload = function() {
+              var ourData = JSON.parse(locRequest.responseText);
+              console.log(ourData.plus_code.compound_code);
+
+              var description = document.querySelector('.description');
+
+              var locationStr = ourData.plus_code.compound_code + `, Latitude : ${crd.latitude.toFixed(5)}` + `, Longitude: ${crd.longitude}` + `, More or less ${crd.accuracy.toFixed(5)} meters acurate.`;
+
+                var d = new Date();
+                console.log(formatAMPM(d));
+                console.log(d.getFullYear());
+
+               description.innerHTML =      `L
+                                            ONDON
+                                            INFORMaTION &
+                                            SPRING EXHIBITION,
+                                            2/2-2/16, ${d.getFullYear()}
+                                            SAT-SUN,
+                                            ${formatAMPM(d).toUpperCase()}-${formatAMPM(new Date(d.getTime() + 15*60000)).toUpperCase()}, 
+                                            FREE ADMISSION,
+                                            LOCATION OF INSTALLATION: 
+                                            ${locationStr.toUpperCase()}
+                                            `
+    
+
+
+
+
+
+
+               var placard = document.querySelector('.placard');
+               placard.classList.add("opened");
+
+               setTimeout(function(){ placard.style.wordBreak = "normal"; }, 4000);
+
+            };
+            locRequest.onerror = function () {
+              console.log("** An error occurred during the transaction");
+            };
+            locRequest.send();
+
+        }
+
+        function error(err) {
+          console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+
+
+      }
+    </script>
+
+    <div id="map"></div>
+
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZl79D2Z2t0LKwJuXebToC3qOJ9P6H8ME&callback=initMap">
+    </script>
+
 
 
 
