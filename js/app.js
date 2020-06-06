@@ -2,83 +2,9 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 
+import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
+
 import {getMouseTravel, setMouseTravel} from "./utils.js";
-
-
-
-
-//Spheres
-var spheres = [];
-var scene2 = new THREE.Scene();
-
-var camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 100000 );
-camera2.position.z = -3;
-
-
-
-var renderer2 = new THREE.WebGLRenderer({antialias:true, alpha:true}); // Create a renderer with Antialiasing
-renderer2.setClearColor(0x000000, 0);
-renderer2.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer2.domElement );
-
-
-var controls2 = new OrbitControls( camera2, renderer2.domElement );
-controls2.enableZoom = false;
-controls2.enableDamping = true;
-controls2.autoRotate = true;
-controls2.autoRotateSpeed = 0.5;
-
-
-
-var sphereGeometry = new THREE.SphereBufferGeometry( 100, 32, 16 );
-
-// var sphereMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: scene.background, refractionRatio: 0.95 } );
-// sphereMaterial.envMap.mapping = THREE.CubeRefractionMapping;
-
-
-
-var light = new THREE.DirectionalLight( 0xffffff );
-light.position.set( 0, 1, 1 ).normalize();
-scene2.add(light);
-
-var sphereMaterial = new THREE.MeshPhongMaterial( {
-        color: 0xFFFFFF,
-        shininess: 0,
-        specular: 0x222222,
-        emissive: 0x555555
-    } );
-
-for ( var i = 0; i < 125; i ++ ) {
-
-    var sphereMesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
-
-
-    // sphereMesh.castShadow = true;
-    // sphereMesh.receiveShadow = true;
-
-    sphereMesh.position.x = Math.random() * 10000 - 5000;
-    sphereMesh.position.y = Math.random() * 10000 - 5000;
-    sphereMesh.position.z = Math.random() * 10000 - 5000;
-
-    sphereMesh.scale.x = sphereMesh.scale.y = sphereMesh.scale.z = Math.random() * 3 + 1;
-
-    scene2.add( sphereMesh );
-
-    spheres.push( sphereMesh );
-
-}
-
-
-
-animate2();
-
-function animate2() {
-
-    controls2.update();
-
-    requestAnimationFrame( animate2 );
-    renderer2.render(scene2, camera2);
-}
 
 
 var scene = new THREE.Scene();
@@ -97,6 +23,7 @@ var torusKnot, dirGroup;
 
 var stats = new Stats();
 document.body.appendChild( stats.dom );
+
 // var camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
 var camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 100000 );
 camera.position.z = -3;
@@ -106,8 +33,8 @@ renderer.setClearColor(0x000000, 0);
 renderer.shadowMapEnabled = true;
 
 
-var scrnRectRatio = 0.8
-
+var scrnRectRatio = 0.85
+var noiseIndex = 0;
 
 // Configure renderer size
 // renderer.setSize( window.innerHeight * 0.7, window.innerHeight * 0.7 );
@@ -124,23 +51,26 @@ audioAccent.volume = 0.0;
 
 
 
-
-
-
-
 controls = new OrbitControls( camera, renderer.domElement );
 controls.enableZoom = false;
 controls.enableDamping = true;
-controls.enableRotate = false;
+// controls.enableRotate = false;
 
 
 
 // Create a plane Mesh with basic material
 var geometry = new THREE.PlaneGeometry(7, 4, 50, 50);
 
+
+
+
+
+
+
+
+
+
 var texture = new THREE.DataTexture( makeNoise(), width, height, THREE.RGBFormat );
-
-
 
 
 var lgeometry = new THREE.BoxGeometry( 0.25, 0.25, 0.25 );
@@ -153,7 +83,6 @@ lcube.position.set(1, 0, 2);
 var rcube = new THREE.Mesh(lgeometry, lmaterial );
 rcube.position.set(1, 0, 2);
 // scene.add( rcube );
-
 
 
 var pointLight1 = new THREE.PointLight( 0xff4444, 1, 15 );
@@ -173,20 +102,13 @@ pointLight2.position.set( 2, 0, -7 );
 scene.add( pointLight4 );
 
 
-
-
-
-
-
-
-
 var material = new THREE.MeshStandardMaterial( {
 
     map: vidTexture,
 
     displacementMap: texture,
     displacementScale: -4,
-    displacementBias:  1, // from original model
+    displacementBias:  2, // from original model
 
     side: THREE.DoubleSide
 
@@ -194,10 +116,14 @@ var material = new THREE.MeshStandardMaterial( {
 
 
 var paperPlane = new THREE.Mesh( geometry, material );
-paperPlane.rotation.y = Math.PI;
+// paperPlane.rotation.y = Math.PI;
 paperPlane.castShadow = true;
 paperPlane.receiveShadow  = true;
 scene.add( paperPlane );
+
+
+
+var thumbnailPlane = new THREE.Mesh( geometry, material );
 
 
 if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
@@ -218,9 +144,6 @@ if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
 } else {
     console.error( 'MediaDevices interface not available.' );
 }
-
-
-
 
 
 
@@ -271,7 +194,7 @@ function animate() {
     controls.update();
 
 
-    texture = new THREE.DataTexture( makeNoise(easedTravel * 0.001), width, height, THREE.RGBFormat );
+    texture = new THREE.DataTexture( makeNoise(easedTravel * 0.001, noiseIndex), width, height, THREE.RGBFormat );
     material.displacementMap = texture;
 
 
@@ -281,29 +204,102 @@ function animate() {
             //  dirGroup.rotation.z += 0.7 * delta;
                 // dirLight.position.z = 17 + Math.sin(time*0.001)*5
 
-
-
-
-    //Move spheres
-    var timer = 0.00001 * Date.now();
-
-    for ( var i = 0, il = spheres.length; i < il; i ++ ) {
-
-        var sphere = spheres[ i ];
-
-        sphere.position.x = 5000 * Math.cos( timer + i );
-        sphere.position.y = 5000 * Math.sin( timer + i * 1.1 );
-
-    }
-
-
-
     renderer.render(scene, camera);
-
     stats.end();
 }
 
 window.addEventListener( 'resize', onWindowResize, false );
+
+
+
+
+
+
+
+
+
+var params = {
+
+    noiseType: 0,
+    spheres: true,
+    text: true,
+
+    noiseScale: 4.5,
+    depth: -4,
+    zoom: 2,
+    lightIntensity1: 1,
+    lightRadius1: 15,
+    lightColour1: '#ff4444',
+    lightIntensity2: 1,
+    lightRadius2: 15,
+    lightColour2: '#aaaaff',
+
+
+    planeY: {
+
+        constant: 0,
+        negated: false,
+        displayHelper: false
+
+    },
+    planeZ: {
+
+        constant: 0,
+        negated: false,
+        displayHelper: false
+
+    }
+
+
+};
+
+
+
+
+// GUI
+var gui = new GUI({ autoPlace: false });
+gui.domElement.id = 'gui';
+gui_container.appendChild(gui.domElement);
+
+gui.add(params, 'noiseType', { perlin: 0, simplex: 1, simplex_layered: 2, worly: 3,worly_second: 4, worly_layered: 5 } ).onChange( d => noiseIndex = d );
+gui.add( params, 'noiseScale' ).min( 0 ).max( 15 ).onChange( d => scale = d );
+gui.add( params, 'depth' ).min( -15 ).max( 15 ).onChange( d => material.displacementScale = d );
+gui.add( params, 'zoom' ).min( -10 ).max( 10 ).onChange( d => material.displacementBias = d );
+gui.add( params, 'spheres' ).onChange( d => d?document.querySelector("canvas").style.display = "initial":document.querySelector("canvas").style.display = "none"
+ );
+gui.add( params, 'text' ).onChange( d => d?document.querySelector(".placard").style.display = "initial":document.querySelector(".placard").style.display = "none"
+ );
+gui.add( params, 'lightIntensity1' ).min( 0 ).max( 8 ).onChange( function(intensityValue) {
+     pointLight1.intensity = intensityValue;
+     pointLight3.intensity = intensityValue;
+});
+gui.add( params, 'lightRadius1' ).min( 0 ).max( 30 ).onChange( function(radiusValue) {
+     pointLight1.distance = radiusValue;
+     pointLight3.distance = radiusValue;
+});
+gui.addColor(params, 'lightColour1').onChange( function(colorValue) {
+     pointLight1.color.set(colorValue);
+     pointLight3.color.set(colorValue);
+});
+gui.add( params, 'lightIntensity2' ).min( 0 ).max( 8 ).onChange( function(intensityValue) {
+     pointLight2.intensity = intensityValue;
+     pointLight4.intensity = intensityValue;
+});
+gui.add( params, 'lightRadius2' ).min( 0 ).max( 30 ).onChange( function(radiusValue) {
+     pointLight2.distance = radiusValue;
+     pointLight4.distance = radiusValue;
+});
+gui.addColor(params, 'lightColour2').onChange( function(colorValue) {
+     pointLight2.color.set(colorValue);
+     pointLight4.color.set(colorValue);
+});
+
+
+
+
+
+
+
 
 
 function onWindowResize(){
@@ -317,66 +313,4 @@ function onWindowResize(){
 
 }
 
-
-
-
-
-
-
-
-
-
-
-// ************************ Drag and drop/ make different module ***************** //
-let dropArea = document.body;
-
-// Prevent default drag behaviors
-;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, preventDefaults, false)   
-  document.body.addEventListener(eventName, preventDefaults, false)
-})
-
-// Handle dropped files
-dropArea.addEventListener('drop', handleDrop, false)
-
-function preventDefaults (e) {
-  e.preventDefault()
-  e.stopPropagation()
-}
-
-function handleDrop(e) {
-  var dt = e.dataTransfer
-  var files = dt.files
-
-  handleFiles(files)
-}
-
-function handleFiles(files) {
-  files = [...files]
-  files.forEach(previewFile)
-}
-
-var bgVideo = document.querySelector('#bgVideo');
-
-
-function previewFile(file) {
-  let reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onloadend = function() {
-
-    if(!file.type.includes("video")){
-        
-        bgVideo.style.display = "none";
-        document.body.style.background = "white";
-        document.body.style.backgroundImage = 'url(' + reader.result + ')';
-        document.body.style.backgroundRepeat= "no-repeat";
-        document.body.style.backgroundSize= "cover";
-    }else{
-        bgVideo.style.display = "initial";
-        // bgVideo.attr("src",reader.result);
-        bgVideo.src = window.URL.createObjectURL(file);
-    }
-    
-  }
-}
 

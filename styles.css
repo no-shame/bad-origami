@@ -1,0 +1,56 @@
+    body { 
+      background: lightblue;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-size:     contain;                      
+    }
+
+    canvas {
+      position:absolute;
+    }
+
+    #bgVideo{
+
+    }
+
+    .placard{
+      position:absolute;
+      z-index: 100;
+      right:0;
+      width:0%;
+      height:60%;
+
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 500;
+      font-size: 4.5vh;
+
+
+      word-break: break-all;
+      text-overflow: break-all; 
+      margin-right:0%;
+
+      color:white;
+      transition: all 5s;
+      transition-timing-function: ease-out;
+    }
+
+    .placard.opened{
+      width: 20%; 
+      margin-right:3%; 
+    }
+
+#gui_container{
+  position: absolute;
+  top: 20%;
+  left: 7%;
+  z-index:99;
+}
+#gui{
+  transform:translate(-50%, -75px);
+}
