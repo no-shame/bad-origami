@@ -11,6 +11,7 @@ var renderer = new THREE.WebGLRenderer({antialias:true, alpha:true}); // Create 
 renderer.setClearColor(0x000000, 0);
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.domElement.style.pointerEvents = "none";
+
 document.body.appendChild( renderer.domElement );
 
 var controls = new OrbitControls( camera, renderer.domElement );

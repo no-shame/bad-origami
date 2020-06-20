@@ -305,6 +305,21 @@ export function initDistortion(){
    // renderer.domElement.classList.add('distortion');
     document.body.appendChild( renderer.domElement );
     animate();
+
+
+    //Add continue button
+    setTimeout(function(){ 
+        var continueBtn = document.createElement("a");
+        continueBtn.classList.add("continue");
+        continueBtn.innerHTML = "See all others...";
+        continueBtn.href = "gallery";
+        document.body.appendChild(continueBtn);
+
+        window.setTimeout( function() {
+          document.querySelector('.continue').classList.add('fade-in');
+        }, 10);
+
+    }, 4000);
 }
 
 
