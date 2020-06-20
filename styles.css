@@ -16,7 +16,10 @@
     }
 
     #bgVideo{
-
+      opacity: 0.0;
+      transition: all 7.5s;
+      transition-timing-function: ease-out;
+      pointer-events: none;
     }
 
     .placard{
@@ -53,4 +56,11 @@
 }
 #gui{
   transform:translate(-50%, -75px);
+}
+
+.distortion{
+  transition: all 3s;
+  transition-timing-function: ease-out;
+  opacity: 0.0;
+  pointer-events: none;
 }

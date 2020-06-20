@@ -11,8 +11,8 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
  
  $('html').mousemove(function(e) {
      
-     ambientBed.play();
-     audioAccent.play();
+     // ambientBed.play();
+     // audioAccent.play();
     
      var mousex = e.pageX;
      var mousey = e.pageY;

@@ -5,6 +5,9 @@
   <title>bad origami</title>
 
   <link rel="stylesheet" type="text/css" href="styles.css">
+  <link rel="stylesheet" type="text/css" href="questions.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200;300;400;500&display=swap" rel="stylesheet"> 
 
@@ -15,7 +18,7 @@
 
 
   <!-- background video -->
-  <video muted loop autoplay id="bgVideo">
+  <video muted loop id="bgVideo">
     <source src="video/ocean.mp4" type="video/mp4">
   </video>
 
@@ -38,13 +41,14 @@
 
   <script src="./js/tooloud.min.js"></script>
   <script src="./js/noise.js"></script>
-    <script type="module" src="./js/bg-render.js"></script>
+  <script type="module" src="./js/bg-render.js"></script>
   <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/questions.js"></script>
 
   <script type="module" src="./js/drag-and-drop.js"></script>
   <script type="module" src="./js/utils.js"></script>
 
-  <div class ="placard">
+<!--   <div class ="placard">
     <div class = "description">
      L<br>
      ONDON
@@ -56,7 +60,7 @@
         FREE ADMISSION,
         LOCATION OF INSTALLATION:
     </div>
-  </div>
+  </div> -->
 
 
 
@@ -70,6 +74,33 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZl79D2Z2t0LKwJuXebToC3qOJ9P6H8ME&callback=initMap">
     </script>
+
+
+
+
+  
+  <div class = "question">
+    <form>
+      <label for="answer">How are you today?</label>
+      <select name="answer" id="answer" onchange="changeQuestion()">
+        <option disabled selected value style="display:none"> ___________ </option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+        <option value="maybe">Maybe</option>
+      </select>
+    </form>
+
+  
+    <div class=" loading-border">
+      <div class="loading" style="height:24px;width:0%"></div>
+    </div>
+  </div>
+
+
+  <p> 
+  <canvas class = "distortion">
+
+  </canvas>
 
 
 </body>

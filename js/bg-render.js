@@ -10,6 +10,7 @@ camera.position.z = -3;
 var renderer = new THREE.WebGLRenderer({antialias:true, alpha:true}); // Create a renderer with Antialiasing
 renderer.setClearColor(0x000000, 0);
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.domElement.style.pointerEvents = "none";
 document.body.appendChild( renderer.domElement );
 
 var controls = new OrbitControls( camera, renderer.domElement );
@@ -74,3 +75,16 @@ function animate() {
     }
 
 }
+
+
+window.addEventListener( 'resize', onWindowResizeBg, false );
+
+
+function onWindowResizeBg(){
+    
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight);
+
+}
+

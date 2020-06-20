@@ -22,12 +22,13 @@ var dirLight, spotLight;
 var torusKnot, dirGroup;
 
 var stats = new Stats();
-document.body.appendChild( stats.dom );
+
 
 // var camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
 var camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 100000 );
 camera.position.z = -3;
-var renderer = new THREE.WebGLRenderer({antialias:true, alpha:true}); // Create a renderer with Antialiasing
+var my_canvas = document.querySelector(".distortion");
+var renderer = new THREE.WebGLRenderer({canvas: my_canvas, antialias:true, alpha:true}); // Create a renderer with Antialiasing
 
 renderer.setClearColor(0x000000, 0);
 renderer.shadowMapEnabled = true;
@@ -39,8 +40,7 @@ var noiseIndex = 0;
 // Configure renderer size
 // renderer.setSize( window.innerHeight * 0.7, window.innerHeight * 0.7 );
 renderer.setSize( window.innerHeight *scrnRectRatio, window.innerHeight *scrnRectRatio );
-// Append Renderer to DOM
-document.body.appendChild( renderer.domElement );
+
 
 
 
@@ -152,7 +152,7 @@ var targetTravel = 0.0;
 var dTravel = 0.0;
 var easedTravel = 0.0;
 
-animate();
+
 
 function animate() {
 
@@ -259,7 +259,6 @@ var params = {
 // GUI
 var gui = new GUI({ autoPlace: false });
 gui.domElement.id = 'gui';
-gui_container.appendChild(gui.domElement);
 
 gui.add(params, 'noiseType', { perlin: 0, simplex: 1, simplex_layered: 2, worly: 3,worly_second: 4, worly_layered: 5 } ).onChange( d => noiseIndex = d );
 gui.add( params, 'noiseScale' ).min( 0 ).max( 15 ).onChange( d => scale = d );
@@ -298,8 +297,15 @@ gui.addColor(params, 'lightColour2').onChange( function(colorValue) {
 
 
 
-
-
+// initDistortion();
+export function initDistortion(){
+    document.body.appendChild( stats.dom );
+    gui_container.appendChild(gui.domElement);
+   // Append Renderer to DOM
+   // renderer.domElement.classList.add('distortion');
+    document.body.appendChild( renderer.domElement );
+    animate();
+}
 
 
 function onWindowResize(){
