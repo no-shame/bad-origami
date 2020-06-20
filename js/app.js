@@ -312,7 +312,7 @@ export function initDistortion(){
         var continueBtn = document.createElement("a");
         continueBtn.classList.add("continue");
         continueBtn.innerHTML = "See all others...";
-        continueBtn.href = "gallery";
+        continueBtn.href = "gallery.html";
         document.body.appendChild(continueBtn);
 
         window.setTimeout( function() {
