@@ -8,14 +8,15 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
  var lastmousey=-1;
  var lastmousetime;
  var mousetravel = 0;
+ var mousex, mousey;
  
  $('html').mousemove(function(e) {
      
      // ambientBed.play();
      // audioAccent.play();
     
-     var mousex = e.pageX;
-     var mousey = e.pageY;
+     mousex = e.pageX;
+     mousey = e.pageY;
      if (lastmousex > -1)
          mousetravel += Math.max( Math.abs(mousex-lastmousex), Math.abs(mousey-lastmousey) );
      lastmousex = mousex;
@@ -27,6 +28,16 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 export function getMouseTravel(){
     return mousetravel;
 }
+
+export function getMouseX(){
+    return mousex;
+}
+
+
+export function getMouseY(){
+    return mousey;
+}
+
 
 export function setMouseTravel(val){
     mousetravel = val;

@@ -4,7 +4,7 @@ import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitCo
 
 import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
 
-import {getMouseTravel, setMouseTravel} from "./utils.js";
+import {getMouseX, getMouseY, getMouseTravel, setMouseTravel} from "./utils.js";
 
 
 var scene = new THREE.Scene();
@@ -173,6 +173,11 @@ function animate() {
     pointLight2.position.set(rcube.position.x, rcube.position.y, rcube.position.z);
     pointLight4.position.set(rcube.position.x, rcube.position.y, -7);
 
+
+    if(targetTravel != getMouseTravel())
+        document.querySelector('.coordinate').innerHTML = 
+       `${(getMouseX()/100).toFixed(1)}' ${(getMouseY()/10).toFixed(1)}' ${(targetTravel*1).toFixed(1)}'' N`;
+
     targetTravel = getMouseTravel() * 1.0;
     targetTravel = targetTravel.toFixed(2)
     dTravel = targetTravel - easedTravel;
@@ -296,11 +301,10 @@ gui.addColor(params, 'lightColour2').onChange( function(colorValue) {
 
 
 
-
 // initDistortion();
 export function initDistortion(){
-    document.body.appendChild( stats.dom );
-    gui_container.appendChild(gui.domElement);
+    // document.body.appendChild( stats.dom );
+    // gui_container.appendChild(gui.domElement);
    // Append Renderer to DOM
    // renderer.domElement.classList.add('distortion');
     document.body.appendChild( renderer.domElement );
@@ -311,16 +315,22 @@ export function initDistortion(){
     setTimeout(function(){ 
         var continueBtn = document.createElement("a");
         continueBtn.classList.add("continue");
-        continueBtn.innerHTML = "See all others...";
+        continueBtn.innerHTML = "EXPLORE FURTHER";
         continueBtn.href = "gallery.html";
+        
+        continueBtn.onclick = function(){
+            screenCap(); 
+        }
+
         document.body.appendChild(continueBtn);
 
         window.setTimeout( function() {
           document.querySelector('.continue').classList.add('fade-in');
         }, 10);
 
-    }, 4000);
+    }, 12000);
 }
+
 
 
 function onWindowResize(){
@@ -333,5 +343,7 @@ function onWindowResize(){
 
 
 }
+
+
 
 

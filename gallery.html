@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Gallery</title>
+        <title>SELF-PORTRAIT</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link type="text/css" rel="stylesheet" href="main.css">
@@ -61,14 +61,17 @@
 
         </div>
 
+        <script type="module" src = "./js/portrait.js"></script>
+
         <script type="module">
 
             import * as THREE from 'https://threejs.org/build/three.module.js';
             import { PointerLockControls } from 'https://threejs.org/examples/jsm/controls/PointerLockControls.js';
+            import {Portrait} from "./js/portrait.js";
 
             var camera, scene, renderer, controls;
 
-            var objects = [];
+            var portraits = [];
 
             var raycaster;
 
@@ -78,12 +81,13 @@
             var moveRight = false;
             var canJump = false;
 
-            var movementSpeed = 1500;
-            var boxAmount = 1000;
-            var boxSpread = 100;
+            var movementSpeed = 6000;
+            var boxAmount = 800;
+            var boxSpread = 150;
+            var renderSpread = 14;
 
             var bgColor = 0xbbddff;
-            var boxMaterial;
+            var portraitMaterial;
 
             var floor;
             var floorBits = [];
@@ -98,6 +102,14 @@
             var direction = new THREE.Vector3();
             var vertex = new THREE.Vector3();
             var color = new THREE.Color();
+
+            var boxGeometry;
+            var portraitGeometry;
+
+
+
+
+            var posVec = [0.0, 0.0, 0.0];
 
             init();
 
@@ -114,6 +126,7 @@
             const texture3 = loader.load( 'images/snap2.jpg' );
             const texture4 = loader.load( 'images/snap3.jpg' );
             const texture5 = loader.load( 'images/snap4.jpg' );
+            const texture6 = loader.load( 'images/snap5.jpg' );
 
 
 
@@ -146,7 +159,10 @@
                     });
 
 
+
                     animate();
+                     addEntries(1,1);
+
                 },
 
                 // onError callback
@@ -165,7 +181,7 @@
 
 
 
-
+                var myFont;
 
 
                 var loader = new THREE.FontLoader();
@@ -225,6 +241,15 @@
                     }
 
                     shapes.push.apply( shapes, holeShapes );
+
+
+
+
+                        var myPortrait = new Portrait(0, 0, boxSpread, portraitGeometry, font, posVec);
+
+                        console.log(myPortrait.posVec);
+
+                        myFont = font;
 
 
                 } ); //end load function
@@ -288,8 +313,6 @@
                 scene.add( controls.getObject() );
 
                 var onKeyDown = function ( event ) {
-
-                    console.log(event.keyCode);
 
                     switch ( event.keyCode ) {
 
@@ -398,16 +421,17 @@
                 //scene.add( floor );
                 floorBits.push( floor );
                 floor = new THREE.Mesh( floorGeometry, floorMaterial );
-                //scene.add( floor );
+               // scene.add( floor );
                 floorBits.push( floor );
                                 floor = new THREE.Mesh( floorGeometry, floorMaterial );
-                //scene.add( floor );
+               // scene.add( floor );
                 floorBits.push( floor );
 
 
-                // objects
+                // portraits
+                portraitGeometry = new THREE.PlaneBufferGeometry( 10, 10, 1, 1 );
 
-                var boxGeometry = new THREE.BoxBufferGeometry( 2.5, 20, 20 );
+                boxGeometry = new THREE.BoxBufferGeometry( 2.5, 20, 20 );
                 boxGeometry = boxGeometry.toNonIndexed(); // ensure each face has unique vertices
 
                 position = boxGeometry.attributes.position;
@@ -422,29 +446,7 @@
 
                 boxGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
-                for ( var i = 0; i < boxAmount; i ++ ) {
 
-                    boxMaterial = new THREE.MeshPhongMaterial( { specular: 0xffffff, flatShading: true, vertexColors: false } );
-                    boxMaterial.color.setHSL( 1, 1 ,1);
-
-                    var box = new THREE.Mesh( boxGeometry, boxMaterial );
-                    box.position.x = Math.floor( Math.random() * 20 - 10 ) * boxSpread;
-                    box.position.y = Math.floor( Math.random() * 20 ) * 20 + 10;
-                    box.position.z = Math.floor( Math.random() * 20 - 10 ) * boxSpread;
-
-                    if(Math.random() > 0.75)
-                      box.rotation.y = Math.PI / 2;
-
-
-                    var scale = Math.random() * 2.0 + 1.0;
-                    box.scale.set(scale, scale, scale);
-
-                    scene.add( box );
-                    objects.push( box );
-
-                }
-
-                //
 
                 renderer = new THREE.WebGLRenderer( { antialias: true } );
                 renderer.setPixelRatio( window.devicePixelRatio );
@@ -466,23 +468,161 @@
 
             }
 
+            function addEntries(x_diff, z_diff){
+                for ( var i = 0; i < boxAmount; i ++ ) {
+
+
+
+                    portraitMaterial = new THREE.MeshPhongMaterial( { specular: 0xffffff, flatShading: true, vertexColors: false, side: THREE.DoubleSide } );
+                    portraitMaterial.color.setHSL( 1, 1 ,1);
+
+                    
+
+
+
+
+                    var rand = Math.random();
+                    var thisTexture;
+                    if(rand < 0.1)
+                        thisTexture = texture1;
+                    if(rand >= 0.1 && rand < 0.2)
+                        thisTexture = texture2;
+                    if(rand >= 0.2 && rand < 0.3)
+                        thisTexture = texture3;
+                    if(rand >= 0.3 && rand < 0.4)
+                        thisTexture = texture4;
+                   if(rand >= 0.4 && rand < 0.5)
+                        thisTexture = texture5;
+                   if(rand >= 0.5 && rand < 0.6 )
+                        thisTexture = texture6;
+                   if (rand > 0.6) thisTexture = 0;
+
+
+                    var thisPortrait = new Portrait(x_diff, z_diff, boxSpread, portraitGeometry, myFont, posVec, thisTexture);
+
+     
+
+
+
+
+
+
+                    scene.add( thisPortrait.box );
+                    portraits.push( thisPortrait );
+
+                }
+            }
+
+            // function addEntries(x_diff, z_diff){
+            //     for ( var i = 0; i < boxAmount; i ++ ) {
+
+
+
+            //         portraitMaterial = new THREE.MeshPhongMaterial( { specular: 0xffffff, flatShading: true, vertexColors: false, side: THREE.DoubleSide } );
+            //         portraitMaterial.color.setHSL( 1, 1 ,1);
+
+                    
+
+
+            //         var thisPortrait = new Portrait(x_diff, z_diff, boxSpread, portraitGeometry, myFont, posVec);
+
+            //         console.log(thisPortrait.box.scale);
+
+
+
+
+            //         var rand = Math.random();
+            //         if(rand < 0.1)
+            //             portraitMaterial.map = texture1;
+            //         if(rand >= 0.1 && rand < 0.2)
+            //             portraitMaterial.map = texture2;
+            //         if(rand >= 0.2 && rand < 0.3)
+            //             portraitMaterial.map = texture3;
+            //         if(rand >= 0.3 && rand < 0.4)
+            //             portraitMaterial.map = texture4;
+            //        if(rand >= 0.4 && rand < 0.5)
+            //             portraitMaterial.map = texture5;
+            //        if(rand >= 0.5 && rand < 0.6 )
+            //             portraitMaterial.map = texture6;
+
+
+
+
+            //         var box = new THREE.Mesh( portraitGeometry, portraitMaterial );
+            //         var xOffset = (x_diff > 0) ? -(boxSpread * 10 /2): (boxSpread * 10 / 2);
+            //         box.position.x = Math.floor( Math.random() * 20 - 10 ) * boxSpread +  posVec[0] + xOffset;
+            //         box.position.y = Math.floor( Math.random() * 20 ) * 35 + 0.5;
+            //         var zOffset = (z_diff > 0) ? -(boxSpread * 10 /2): (boxSpread * 10 / 2);
+            //         box.position.z = Math.floor( Math.random() * 20 - 10 ) * boxSpread  +  posVec[2] + zOffset;
+
+            //         if(Math.random() > 0.75)
+            //           box.rotation.y = Math.PI / 2;
+
+
+            //         var scale = Math.random() * 6.0 + 0.15;
+            //         box.scale.set(scale, scale, scale);
+
+            //         scene.add( box );
+            //         portraits.push( box );
+
+            //     }
+            // }
+
+            function removeEntries(axis, box, index) {
+
+                if(axis == "x"){
+                    if(box.position.x < controls.getObject().position.x - ((boxSpread * renderSpread) ) || box.position.x > controls.getObject().position.x + ((boxSpread * renderSpread) )){
+                        scene.remove(box);
+                        portraits.splice(index, 1);
+                    }
+                }
+
+                if(axis == "z"){
+                    if(box.position.z < controls.getObject().position.z - ((boxSpread * renderSpread) ) || box.position.z > controls.getObject().position.z + ((boxSpread * renderSpread) )){
+                        scene.remove(box);
+                        portraits.splice(index, 1);
+                    }
+                }
+
+            } 
+
             function animate() {
 
                 requestAnimationFrame( animate );
 
-                var i = 0;
-                floorBits.forEach(function(floor) {
+                // var i = 0;
+                // floorBits.forEach(function(floor) {
 
 
-                  if(floor.position.x < controls.getObject().position.x - 50 || floor.position.x > controls.getObject().position.x + 50)
-                        floor.position.x = controls.getObject().position.x;
+                  if(posVec[0] < controls.getObject().position.x - boxSpread * renderSpread  || posVec[0] > controls.getObject().position.x + boxSpread * renderSpread ){7
+                        var x_diff = posVec[0] -  controls.getObject().position.x; 
+                        posVec[0] = controls.getObject().position.x;
+                        addEntries(x_diff, 0);
+                        console.log("tick");
+ console.log(portraits.length);
+                        portraits.forEach(function(box, index){
+                            removeEntries("x", box.box, index)
+                        });
 
-                  if(floor.position.z < controls.getObject().position.z - 50 || floor.position.z > controls.getObject().position.z + 50)
-                        floor.position.z = controls.getObject().position.z;
-                  // floor.position.z = controls.getObject().position.z;
-                  i++;
+                       
+                  }
+
+                  if(posVec[2]< controls.getObject().position.z - boxSpread * renderSpread  || posVec[2] > controls.getObject().position.z + boxSpread * renderSpread ){
+                        var z_diff = posVec[2] -  controls.getObject().position.z; 
+                        posVec[2] = controls.getObject().position.z;
+                        addEntries(0, z_diff);
+                        console.log("tick");
+ console.log(portraits.length);
+                        portraits.forEach(function(box, index){
+                            removeEntries("z", box.box, index)
+                        });
+
+
+                  }
+
+                portraits.forEach(function(box, index){
+                     box.ascend();
                 });
-
 
 
 
@@ -492,9 +632,6 @@
                     raycaster.ray.origin.copy( controls.getObject().position );
                     raycaster.ray.origin.y -= 10;
 
-                    var intersections = raycaster.intersectObjects( objects );
-
-                    var onObject = intersections.length > 0;
 
                     var time = performance.now();
                     var delta = ( time - prevTime ) / 1000;
@@ -514,12 +651,6 @@
                     if ( moveForward || moveBackward ) velocity.z -= direction.z * movementSpeed * delta;
                     if ( moveLeft || moveRight ) velocity.x -= direction.x * movementSpeed * delta;
 
-                    if ( onObject === true ) {
-
-                        velocity.y = Math.max( 0, velocity.y );
-                        canJump = true;
-
-                    }
 
                     controls.moveRight( - velocity.x * delta );
                     controls.moveForward( - velocity.z * delta );
@@ -529,9 +660,14 @@
 
                     if(iMustGo){
                         console.log("I must go");
-                        exponential = exponential + 0.001;
-                        controls.getObject().position.y += exponential * 0.25;
+                        exponential = exponential + 0.01;
+                        // controls.getObject().position.y += exponential * 0.25;
                         controls.getObject().position.z += exponential * 2;
+
+                        if(camera.fov < 160)
+                            camera.fov += 0.1;
+
+                        onWindowResize();
                     }
 
                     if ( controls.getObject().position.y < 10 ) {

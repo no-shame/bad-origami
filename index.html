@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
 
-  <title>bad origami</title>
+  <title>SELF-PORTRAIT</title>
 
   <link rel="stylesheet" type="text/css" href="styles.css">
   <link rel="stylesheet" type="text/css" href="questions.css">
@@ -10,6 +10,7 @@
 
 
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200;300;400;500&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet"> 
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -17,15 +18,29 @@
 <body>
 
 
-  <div class = "bgImage">
+<!--   <div class = "bgImage">
 
-  </div>
+  </div> -->
 
 
   <!-- background video -->
-<!--   <video muted loop id="bgVideo">
-    <source src="video/ocean.mp4" type="video/mp4">
-  </video> -->
+  <div class = "bgAll">
+
+    <video muted loop id="bgVideo">
+      <source src="video/ocean.mp4" type="video/mp4">
+    </video>
+
+
+    <div class = "element1">
+    </div>
+    <div class = "element2">
+    </div>
+    <div class = "coordinate">
+    47' 39' 48'' N
+     </div>
+
+  </div>
+
 
   <audio id="myAudio">
     <source src="./sound/paper.wav" type="audio/wav">
@@ -46,6 +61,7 @@
 
   <script src="./js/tooloud.min.js"></script>
   <script src="./js/noise.js"></script>
+  <script src = "./js/screenCap.js"></script>
   <script type="module" src="./js/bg-render.js"></script>
   <script type="module" src="./js/app.js"></script>
   <script type="module" src="./js/questions.js"></script>
@@ -69,16 +85,13 @@
 
 
 
-    <script src="./js/label.js"></script>
+    <!-- <script src="./js/label.js"></script> -->
 
     <div id="map"></div>
 
     <div id="gui_container"></div>
 
 
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZl79D2Z2t0LKwJuXebToC3qOJ9P6H8ME&callback=initMap">
-    </script>
 
 
 
@@ -86,23 +99,35 @@
   
   <div class = "question">
     <form>
-      <label for="answer">How are you today?</label>
+      <label for="answer">Do you consent to be part of this interactive installation?</label>
       <select name="answer" id="answer" onchange="changeQuestion()">
         <option disabled selected value style="display:none"> ___________ </option>
       </select>
     </form>
 
   
-    <div class=" loading-border">
-      <div class="loading" style="height:24px;width:0%"></div>
-    </div>
+
   </div>
+
+      <div class="loading-border">
+      <div class="loading" style="width:0%"></div>
+    </div>
 
 
   <canvas class = "distortion">
 
   </canvas>
 
+
+
+<div class="slidecontainer">
+  <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+</div>
+
+
+
+
+  
 
 
 </body>
